@@ -17,9 +17,21 @@ class ReminderListViewController: UICollectionViewController {
     
     var listStyle: ReminderListtyle = .today
     let listStyleSegmentedControl = UISegmentedControl(items: [ReminderListtyle.today.name, ReminderListtyle.future.name, ReminderListtyle.all.name])
+    var headerView: ProgressHeaderView?
+    // Thuộc tính được tính toán
+    var progress: CGFloat {
+        let chunkSise = 1.0 / CGFloat(filtereReminders.count)
+        let progress = filtereReminders.reduce(0.0) {
+            let chunk = $1.isComplete ? chunkSise : 0
+            return $0 + chunk
+        }
+        return progress
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        collectionView.backgroundColor = .todayGradientFutureBegin
         
         let listLayout = listLayout()
         collectionView.collectionViewLayout = listLayout
@@ -29,7 +41,12 @@ class ReminderListViewController: UICollectionViewController {
         dataSource = DataSource(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, itemIdentifier: Reminder.ID) in
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         }
-        
+        //Thêm vào nguồn dữ liệu sử dụng đăng ký chế độ xem tiêu đề mới
+        let headerRegistration = UICollectionView.SupplementaryRegistration(elementKind: ProgressHeaderView.elementKind, handler: supplementaryRegistrationHandler)
+             dataSource.supplementaryViewProvider = { supplementaryView, elementKind, indexPath in
+                 return self.collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+             }
+            
         let addbutton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didPressAddButton(_:)))
         addbutton.accessibilityLabel = NSLocalizedString("Add reminder", comment: "Add button accessibilyty label")
         navigationItem.rightBarButtonItem = addbutton
@@ -48,6 +65,16 @@ class ReminderListViewController: UICollectionViewController {
         showDetail(for: id)
         return false
     }
+    // Hệ thống phương thức này khi chế độ xem collection sắp hiển thị chế độ xem
+    override func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+       // Sử dụng một guardcâu lệnh để kiểm tra xem loại phần tử có phải là dạng xem tiến trình hay không. Nếu không, hãy quay lại điểm gọi hàm.
+       // Toán tử ép kiểu as?có điều kiện truyền xuống viewtừ kiểu sang .UICollectionReusableViewProgressHeaderView
+        guard elementKind == ProgressHeaderView.elementKind, let progressView = view as? ProgressHeaderView else {
+            return
+        }
+        // Cập nhật thuộc tính
+        progressView.progress = progress
+    }
     
     func showDetail(for id: Reminder.ID) {
         let reminder = reminder(for: id)
@@ -61,6 +88,7 @@ class ReminderListViewController: UICollectionViewController {
     
     private func listLayout() -> UICollectionViewCompositionalLayout {
         var listConfiguration = UICollectionLayoutListConfiguration(appearance: .grouped)
+        listConfiguration.headerMode = .supplementary // Thay đổi chế độ tiêu đề để xác định loại tiêu  đề
         listConfiguration.showsSeparators = false
         listConfiguration.trailingSwipeActionsConfigurationProvider = makeSwipeAction
         listConfiguration.backgroundColor = .clear
@@ -76,5 +104,9 @@ class ReminderListViewController: UICollectionViewController {
             completion(false)
         }
         return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
+    private func supplementaryRegistrationHandler(progressView: ProgressHeaderView, elementKind: String, indexPath: IndexPath) {
+        headerView = progressView
     }
 }
