@@ -31,7 +31,7 @@ class ReminderListViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        collectionView.backgroundColor = .todayGradientFutureBegin
+        collectionView.backgroundColor = .todayGradientAllBegin
         
         let listLayout = listLayout()
         collectionView.collectionViewLayout = listLayout
@@ -60,15 +60,29 @@ class ReminderListViewController: UICollectionViewController {
         collectionView.dataSource = dataSource
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshBackground()
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         let id = filtereReminders[indexPath.item].id
         showDetail(for: id)
         return false
     }
+    
+    func refreshBackground() {
+        collectionView.backgroundView = nil
+        let backgroundView = UIView()
+        let gradientLayer = CAGradientLayer.gradientLayer(for: listStyle, in: collectionView.frame)
+        backgroundView.layer.addSublayer(gradientLayer)
+        collectionView.backgroundView = backgroundView
+    }
+    
     // Hệ thống phương thức này khi chế độ xem collection sắp hiển thị chế độ xem
     override func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-       // Sử dụng một guardcâu lệnh để kiểm tra xem loại phần tử có phải là dạng xem tiến trình hay không. Nếu không, hãy quay lại điểm gọi hàm.
-       // Toán tử ép kiểu as?có điều kiện truyền xuống viewtừ kiểu sang .UICollectionReusableViewProgressHeaderView
+       // Sử dụng một guard câu lệnh để kiểm tra xem loại phần tử có phải là dạng xem tiến trình hay không. Nếu không, hãy quay lại điểm gọi hàm.
+       // Toán tử ép kiểu as? có điều kiện truyền xuống view từ kiểu .UICollectionReusableView sang ProgressHeaderView
         guard elementKind == ProgressHeaderView.elementKind, let progressView = view as? ProgressHeaderView else {
             return
         }

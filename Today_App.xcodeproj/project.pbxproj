@@ -30,6 +30,7 @@
 		82F17B7F28B58DBA0019ECC8 /* TextViewContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F17B7E28B58DBA0019ECC8 /* TextViewContentView.swift */; };
 		82F17B8128B5962E0019ECC8 /* DatePickerContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F17B8028B5962E0019ECC8 /* DatePickerContentView.swift */; };
 		82F17B8328C178AD0019ECC8 /* ReminderListStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F17B8228C178AD0019ECC8 /* ReminderListStyle.swift */; };
+		C13B3BDD28C52C1600C3538C /* CAGradientLayer+ListStype.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13B3BDC28C52C1600C3538C /* CAGradientLayer+ListStype.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		82F17B7E28B58DBA0019ECC8 /* TextViewContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewContentView.swift; sourceTree = "<group>"; };
 		82F17B8028B5962E0019ECC8 /* DatePickerContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerContentView.swift; sourceTree = "<group>"; };
 		82F17B8228C178AD0019ECC8 /* ReminderListStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderListStyle.swift; sourceTree = "<group>"; };
+		C13B3BDC28C52C1600C3538C /* CAGradientLayer+ListStype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+ListStype.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +148,7 @@
 				8203FE1A289EBE6900027752 /* Date+Today.swift */,
 				8203FE1F28A04AB100027752 /* UIColor+ToDay.swift */,
 				82F17B8228C178AD0019ECC8 /* ReminderListStyle.swift */,
+				C13B3BDC28C52C1600C3538C /* CAGradientLayer+ListStype.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C13B3BDD28C52C1600C3538C /* CAGradientLayer+ListStype.swift in Sources */,
 				8277951828C41CCA00CDDD69 /* ProgressHeaderView.swift in Sources */,
 				82F17B7D28B582E90019ECC8 /* UiContentConfiguration+Stateless.swift in Sources */,
 				822E240F28A9A9A1008DB7B8 /* ReminderViewController+Section.swift in Sources */,
