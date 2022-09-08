@@ -83,6 +83,7 @@ extension ReminderListViewController {
             do {
                 try await reminderStore.requestAcess()
                 reminders = try await reminderStore.redAll()
+                NotificationCenter.default.addObserver(self, selector: #selector(eventStoreChanged(_:)), name: .EKEventStoreChanged, object: nil)
             } catch TodayError.accessDenied, TodayError.acessRestricted {
                 #if DEBUG
                 reminders = Reminder.sampleData
@@ -94,14 +95,36 @@ extension ReminderListViewController {
         }
     }
     
+    func reminderStoreChange() {
+        Task {
+            reminders = try await reminderStore.redAll()
+            updateSnapshot()
+        }
+    }
+    
     func add(_ reminder: Reminder) {
-        reminders.append(reminder)
+        var reminder = reminder
+        do {
+            let idFromStore = try reminderStore.save(reminder)
+            reminder.id = idFromStore
+            reminders.append(reminder)
+        } catch TodayError.accessDenied {
+            
+        } catch {
+            showError(error)
+        }
     }
     
     func deleteReminder(with id: Reminder.ID) {
-        let index = reminders.indexOfReminder(with: id)
-        reminders.remove(at: index)
-        
+        do {
+            try reminderStore.remove(with: id)
+            let index = reminders.indexOfReminder(with: id)
+            reminders.remove(at: index)
+        } catch TodayError.accessDenied {
+            
+        } catch {
+            showError(error)
+        }
     }
     
     func reminder(for id: Reminder.ID) -> Reminder {
@@ -110,7 +133,14 @@ extension ReminderListViewController {
     }
     
     func update(_ reminder: Reminder, with id: Reminder.ID) {
-        let index = reminders.indexOfReminder(with: id)
-        reminders[index] = reminder
+        do {
+            try reminderStore.save(reminder)
+            let index = reminders.indexOfReminder(with: id)
+            reminders[index] = reminder
+        } catch TodayError.accessDenied {
+
+        } catch {
+            showError(error)
+        }
     }
 }
